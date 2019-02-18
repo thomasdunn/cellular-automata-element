@@ -14,47 +14,52 @@ renderer.view.style.display = "block";
 // add render view to DOM
 document.body.appendChild(renderer.view);
 
-var graphics = new PIXI.Graphics();
-
-// set a fill and line style
-graphics.beginFill(0xFF3300);
-graphics.lineStyle(10, 0xffd900, 1);
-
-stage.addChild(graphics);
-
-// lets create moving shape
-var thing = new PIXI.Graphics();
-stage.addChild(thing);
-thing.position.x = 620/2;
-thing.position.y = 380/2;
-
-var count = 0;
-
-requestAnimationFrame(animate);
-
-function animate() {
-
-    thing.clear();
-
-    count += 0.1;
-
-    thing.clear();
-    thing.lineStyle(30, 0xff0000, 1);
-    thing.beginFill(0xffFF00, 0.5);
-
-    thing.moveTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
-    thing.lineTo(120 + Math.cos(count) * 20, -100 + Math.sin(count)* 20);
-    thing.lineTo(120 + Math.sin(count) * 20, 100 + Math.cos(count)* 20);
-    thing.lineTo(-120 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
-    thing.lineTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
-
-    thing.rotation = count * 0.1;
-    renderer.render(stage);
-    requestAnimationFrame( animate );
-}
-
+animateThing();
 
 /////////////////////////////////////////////////////////////////////////
+
+function animateThing() {
+    // lets create moving shape
+    var thing = new PIXI.Graphics();
+    stage.addChild(thing);
+    thing.position.x = 620/2;
+    thing.position.y = 380/2;
+
+    var count = 0;
+
+    requestAnimationFrame(animate);
+
+    function animate() {
+
+        thing.clear();
+
+        count += 0.1;
+
+        thing.lineStyle(30, 0xff0000, 1);
+        thing.beginFill(0xffFF00, 0.5);
+
+        thing.moveTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
+        thing.lineTo(120 + Math.cos(count) * 20, -100 + Math.sin(count)* 20);
+        thing.lineTo(120 + Math.sin(count) * 20, 100 + Math.cos(count)* 20);
+        thing.lineTo(-120 + Math.cos(count)* 20, 100 + Math.sin(count)* 20);
+        thing.lineTo(-120 + Math.sin(count) * 20, -100 + Math.cos(count)* 20);
+
+        thing.rotation = count * 0.1;
+        renderer.render(stage);
+        requestAnimationFrame( animate );
+    }
+}
+
+function createGraphicsContext() {
+    var graphics = new PIXI.Graphics();
+
+    // set a fill and line style
+    graphics.beginFill(0xFF3300);
+    graphics.lineStyle(10, 0xffd900, 1);
+
+    stage.addChild(graphics);
+
+}
 
 function drawPolygon1() {
     // set a fill and line style
