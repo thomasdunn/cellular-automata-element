@@ -2,7 +2,7 @@ var stage= new PIXI.Container();
 
 // create a renderer instance
 //var renderer = new PIXI.CanvasRenderer(800, 600);//PIXI.autoDetectRenderer(800, 600);
-var renderer = PIXI.autoDetectRenderer(620, 380, {
+var renderer = PIXI.autoDetectRenderer(800, 800, {
     backgroundColor: 0xffffff
 });
 
@@ -14,7 +14,15 @@ renderer.view.style.display = "block";
 // add render view to DOM
 document.body.appendChild(renderer.view);
 
-animateThing();
+// const cellsX = 40;
+// const cellsY = 30;
+
+// animateThing();
+
+const c = new Cell(stage, 0, 0, 20, 20);
+c.draw();
+
+renderer.render(stage);
 
 /////////////////////////////////////////////////////////////////////////
 
