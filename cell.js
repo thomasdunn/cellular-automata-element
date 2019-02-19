@@ -1,19 +1,38 @@
 class Cell {
-    constructor(board, x, y, width, height) {
+    constructor(board, xIndex, yIndex) {
         this.g = new PIXI.Graphics();
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.i = xIndex;
+        this.j = yIndex;
 
-        this.g.beginFill(0x000000);
-        // this.g.lineStyle(0, 0xFF0000, 1);
+        this.on();
 
         board.add(this);
     }
 
     draw() {
-        this.g.drawRect(this.x, this.y, this.width, this.height);
+        this.g.clear();
+
+        const fill = this.active ? 0x000000 : 0xFFFFFF;
+        this.g.beginFill(fill);
+        // this.g.lineStyle(0, 0xFF0000, 1);
+
+        this.g.drawRect(this.i * Cell.width, this.j * Cell.height, Cell.width, Cell.height);
+        return this;
+    }
+
+    on() {
+        this.active = true;
+        return this;
+    }
+
+    off() {
+        this.active = false;
+        return this;
+    }
+
+    static size(width, height) {
+        Cell.width = width;
+        Cell.height = height;
     }
 
     getGraphics() {

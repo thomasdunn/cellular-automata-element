@@ -22,9 +22,24 @@ renderer.view.style.display = "block";
 document.body.appendChild(renderer.view);
 
 const board = new Board(renderer, stage);
+Cell.size(cellWidth, cellHeight);
 
-const c = new Cell(board, 0, 0, cellWidth, cellHeight);
-c.draw();
+const cells = [];
+for (let i = 0; i < cellCountX; i++) {
+    cells[i] = [];
+    for (let j = 0; j < cellCountY; j++) {
+        const c = new Cell(board, i, j);
+        cells[i][j] = c;
+
+        if ((i + j) % 2 === 1) {
+            c.on().draw();
+        }
+        else {
+            c.off().draw();
+        }
+    }
+}
+
 
 board.render();
 
