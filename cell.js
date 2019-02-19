@@ -30,6 +30,11 @@ class Cell {
         return this;
     }
 
+    toggle() {
+        this.active = ! this.active;
+        return this;
+    }
+
     static size(width, height) {
         Cell.width = width;
         Cell.height = height;

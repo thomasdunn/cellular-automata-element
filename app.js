@@ -40,8 +40,19 @@ for (let i = 0; i < cellCountX; i++) {
     }
 }
 
+requestAnimationFrame(animate);
 
-board.render();
+function animate() {
+    for (let i = 0; i < cellCountX; i++) {
+        for (let j = 0; j < cellCountY; j++) {
+            cells[i][j].toggle().draw();
+        }
+    }
+
+    board.render();
+    requestAnimationFrame(animate);
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 
