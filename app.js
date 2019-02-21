@@ -13,6 +13,9 @@ var renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
     backgroundColor: 0xffffff
 });
 
+console.log(`Canvas: ${PIXI.RENDERER_TYPE.CANVAS} WebGL ${PIXI.RENDERER_TYPE.WEBGL}`);
+console.log(`This renderer: ${renderer.type}`);
+
 // set the canvas width and height to fill the screen
 //renderer.view.style.width = window.innerWidth + "px";
 //renderer.view.style.height = window.innerHeight + "px";
