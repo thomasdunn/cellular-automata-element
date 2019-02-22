@@ -1,5 +1,6 @@
 const stage = new PIXI.Container();
 const perf = new Perf({logEvery: 10});
+const patterns = new Patterns();
 
 const stageWidth = 800;
 const stageHeight = 800;
@@ -22,6 +23,8 @@ document.body.appendChild(renderer.view);
 
 Cell.initTextures(renderer);
 Cell.initCells(stage, cellCountX, cellCountY);
+
+patterns.getPattern('zweiback').then(pattern => console.log(JSON.stringify(pattern)));
 
 requestAnimationFrame(animate);
 
