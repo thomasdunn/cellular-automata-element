@@ -1,4 +1,5 @@
-var stage = new PIXI.Container();
+const stage = new PIXI.Container();
+const perf = new Perf({logEvery: 10});
 
 const stageWidth = 800;
 const stageHeight = 800;
@@ -9,7 +10,7 @@ const cellHeight = stageHeight / cellCountY;
 
 Cell.size(cellWidth, cellHeight);
 
-var renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
+const renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
     backgroundColor: 0x00ff00
 });
 
@@ -29,4 +30,6 @@ function animate() {
 
     renderer.render(stage);
     requestAnimationFrame(animate);
+
+    perf.tick();
 }
