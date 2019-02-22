@@ -3,8 +3,8 @@ const perf = new Perf({logEvery: 10});
 
 const stageWidth = 800;
 const stageHeight = 800;
-const cellCountX = 400;
-const cellCountY = 400;
+const cellCountX = 200;
+const cellCountY = 200;
 const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
@@ -29,7 +29,12 @@ function animate() {
     Cell.update();
 
     renderer.render(stage);
-    requestAnimationFrame(animate);
-
     perf.tick();
+
+    if (perf.ticks === 120) {
+        perf.end();
+        return;
+    }
+
+    requestAnimationFrame(animate);
 }
