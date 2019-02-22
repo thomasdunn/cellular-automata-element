@@ -22,9 +22,10 @@ renderer.view.style.display = "block";
 document.body.appendChild(renderer.view);
 
 Cell.initTextures(renderer);
-Cell.initCells(stage, cellCountX, cellCountY);
+Cell.initCells(cellCountX, cellCountY);
+Cell.initSprites(stage, cellCountX, cellCountY);
 
-patterns.getPattern('zweiback').then(pattern => console.log(JSON.stringify(pattern)));
+// patterns.getPattern('zweiback').then(pattern => console.log(JSON.stringify(pattern)));
 
 requestAnimationFrame(animate);
 
