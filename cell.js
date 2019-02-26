@@ -109,26 +109,30 @@ class Cell {
     }
 
     static updateLife() {
-        // if (Cell.generationCount >= 10) {
-        //     return;
-        // }
-        // console.log('drawing');
-        //
-//         for (let i = 0; i < Cell.cellsX; i++) {
-//             //TODO better way
-//             Cell.generations[Cell.nextGenIndex][i] = [...Cell.generations[Cell.thisGenIndex][i]];
-//         }
-// Cell.generations[Cell.thisGenIndex][22][22].name = 'Tom';
-//         console.log(`name ${Cell.generations[Cell.nextGenIndex][22][22].name}`);
 
+        // render 63% / update 31%
+        // for (let i = 0; i < Cell.cellsX; i++) {
+        //     Cell.generations[Cell.nextGenIndex][i] = [];
+        //     for (let j = 0; j < Cell.cellsY; j++) {
+        //         Cell.generations[Cell.nextGenIndex][i][j] = {
+        //             ...Cell.generations[Cell.thisGenIndex][i][j]
+        //         }
+        //     }
+        // }
+
+        // render 80% / update 16%
         for (let i = 0; i < Cell.cellsX; i++) {
             Cell.generations[Cell.nextGenIndex][i] = [];
             for (let j = 0; j < Cell.cellsY; j++) {
                 Cell.generations[Cell.nextGenIndex][i][j] = {
-                    ...Cell.generations[Cell.thisGenIndex][i][j]
+                    active: Cell.generations[Cell.thisGenIndex][i][j].active,
+                    neighborCount: Cell.generations[Cell.thisGenIndex][i][j].neighborCount
                 }
             }
         }
+
+        // render 24% / update 74%
+        // Cell.generations[Cell.nextGenIndex] = JSON.parse(JSON.stringify(Cell.generations[Cell.thisGenIndex]));
 
         for (let i = 0; i < Cell.cellsX; i++) {
             for (let j = 0; j < Cell.cellsY; j++) {
