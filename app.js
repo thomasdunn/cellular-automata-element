@@ -9,8 +9,6 @@ const cellCountY = 200;
 const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
-Cell.size(cellWidth, cellHeight);
-
 const renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
     backgroundColor: 0x00ff00
 });
@@ -21,13 +19,11 @@ console.log(`This renderer: ${renderer.type}`);
 renderer.view.style.display = "block";
 document.body.appendChild(renderer.view);
 
-Cell.initTextures(renderer);
-Cell.initCells(cellCountX, cellCountY);
-Cell.initSprites(stage, cellCountX, cellCountY);
-
-// patterns.getPattern('zweiback').then(pattern => console.log(JSON.stringify(pattern)));
-
-requestAnimationFrame(animate);
+patterns.getPattern('zweiback').then(pattern => {
+    console.log(JSON.stringify(pattern));
+    Cell.init(cellCountX, cellCountY, cellWidth, cellHeight, pattern, renderer, stage);
+    requestAnimationFrame(animate);
+});
 
 function animate() {
     Cell.update();
@@ -35,7 +31,7 @@ function animate() {
     renderer.render(stage);
     perf.tick();
 
-    if (perf.ticks === 120) {
+    if (perf.ticks === 1200) {
         perf.end();
         return;
     }
