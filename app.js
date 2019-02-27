@@ -10,7 +10,7 @@ const lexicon = new Lexicon();
 const graphics = new Graphics(cellCountX, cellCountY, cellWidth, cellHeight, stageWidth, stageHeight);
 const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
-document.body.appendChild(graphics.view);
+document.getElementById('container').appendChild(graphics.view);
 
 lexicon.getData('zweiback').then(data => {
 
@@ -36,4 +36,4 @@ function animate() {
 // TODO
 // more simply computing offsets for neighbor counting
 // implement wrapping
-// other code cleanup
+// try class objects for cells rather than object literals to see if helps perf
