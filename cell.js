@@ -30,13 +30,13 @@ class Cell {
     static initTextures(renderer) {
         Cell.textures = {};
 
-        let g = new PIXI.Graphics();
-        g.beginFill(0x000000);
-        g.drawRect(0, 0, Cell.width, Cell.height);
-        Cell.textures.on = PIXI.RenderTexture.create(g.width, g.height);
-        renderer.render(g, Cell.textures.on);
+        // let g = new PIXI.Graphics();
+        // g.beginFill(0x000000);
+        // g.drawRect(0, 0, Cell.width, Cell.height);
+        // Cell.textures.on = PIXI.RenderTexture.create(g.width, g.height);
+        // renderer.render(g, Cell.textures.on);
 
-        g = new PIXI.Graphics();
+        let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF);
         g.drawRect(0, 0, Cell.width, Cell.height);
         Cell.textures.off = PIXI.RenderTexture.create(g.width, g.height);
@@ -47,7 +47,7 @@ class Cell {
         for (let i = 0; i < Cell.cellsX; i++) {
             Cell.sprites[i] = [];
             for (let j = 0; j < Cell.cellsY; j++) {
-                const sprite = new PIXI.Sprite(Cell.getTexture(Cell.readCell(i, j)));
+                const sprite = new PIXI.Sprite(Cell.getTexture(false));
                 sprite.position.x = i * Cell.width;
                 sprite.position.y = j * Cell.height;
                 stage.addChild(sprite);
@@ -173,7 +173,8 @@ class Cell {
 
     static draw(x, y, active) {
         const sprite = Cell.sprites[x][y];
-        sprite.texture = Cell.getTexture(active);
+        sprite.tint = active ? 0x000000 : 0xFFFFFF;
+        // sprite.texture = Cell.getTexture(active);
     }
 
     static getTexture(active) {
