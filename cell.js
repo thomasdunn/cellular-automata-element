@@ -115,15 +115,20 @@ class Cell {
     }
 
     static initCellLife(x, y, active) {
+        const xoleft = x-1;
+        const xoright = x+1;
+        const yoabove = y-1;
+        const yobelow = y+1;
+        
         const neighborCount =
-            Cell.readNeighborCellLife(x-1, y-1) +
-            Cell.readNeighborCellLife(x, y-1) +
-            Cell.readNeighborCellLife(x+1, y-1) +
-            Cell.readNeighborCellLife(x-1, y) +
-            Cell.readNeighborCellLife(x+1, y) +
-            Cell.readNeighborCellLife(x-1, y+1) +
-            Cell.readNeighborCellLife(x, y+1) +
-            Cell.readNeighborCellLife(x+1, y+1);
+            Cell.readNeighborCellLife(xoleft, yoabove) +
+            Cell.readNeighborCellLife(x, yoabove) +
+            Cell.readNeighborCellLife(xoright, yoabove) +
+            Cell.readNeighborCellLife(xoleft, y) +
+            Cell.readNeighborCellLife(xoright, y) +
+            Cell.readNeighborCellLife(xoleft, yobelow) +
+            Cell.readNeighborCellLife(x, yobelow) +
+            Cell.readNeighborCellLife(xoright, yobelow);
 
         Cell.generations[Cell.nextGenIndex][x][y] = {
             active,
@@ -137,37 +142,42 @@ class Cell {
 
     static setCellLife(x, y, active) {
         const delta = active ? 1 : -1;
-        let cell = Cell.safeGetNeighborCell(x-1, y-1);
+        const xoleft = x-1;
+        const xoright = x+1;
+        const yoabove = y-1;
+        const yobelow = y+1;
+
+        let cell = Cell.safeGetNeighborCell(xoleft, yoabove);
         if (cell) {
-            Cell.safeSetNeighborCell(x-1, y-1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoleft, yoabove, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x, y-1);
+        cell = Cell.safeGetNeighborCell(x, yoabove);
         if (cell) {
-            Cell.safeSetNeighborCell(x, y-1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(x, yoabove, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x+1, y-1);
+        cell = Cell.safeGetNeighborCell(xoright, yoabove);
         if (cell) {
-            Cell.safeSetNeighborCell(x+1, y-1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoright, yoabove, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x-1, y);
+        cell = Cell.safeGetNeighborCell(xoleft, y);
         if (cell) {
-            Cell.safeSetNeighborCell(x-1, y, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoleft, y, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x+1, y);
+        cell = Cell.safeGetNeighborCell(xoright, y);
         if (cell) {
-            Cell.safeSetNeighborCell(x+1, y, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoright, y, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x-1, y+1);
+        cell = Cell.safeGetNeighborCell(xoleft, yobelow);
         if (cell) {
-            Cell.safeSetNeighborCell(x-1, y+1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoleft, yobelow, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x, y+1);
+        cell = Cell.safeGetNeighborCell(x, yobelow);
         if (cell) {
-            Cell.safeSetNeighborCell(x, y+1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(x, yobelow, cell.neighborCount + delta)
         }
-        cell = Cell.safeGetNeighborCell(x+1, y+1);
+        cell = Cell.safeGetNeighborCell(xoright, yobelow);
         if (cell) {
-            Cell.safeSetNeighborCell(x+1, y+1, cell.neighborCount + delta)
+            Cell.safeSetNeighborCell(xoright, yobelow, cell.neighborCount + delta)
         }
 
         Cell.generations[Cell.nextGenIndex][x][y].active = active;
@@ -209,10 +219,6 @@ class Cell {
         else {
             gen[x][y].active = active;
         }
-    }
-
-    static readCell(x, y) {
-        return Cell.generations[Cell.thisGenIndex][x][y].active;
     }
 
     static readCellNextGen(x, y) {

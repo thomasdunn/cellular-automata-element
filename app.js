@@ -48,3 +48,8 @@ function animate() {
 
     requestAnimationFrame(animate);
 }
+
+// TODO
+// more simply computing offsets for neighbor counting
+// implement wrapping
+// other code cleanup
