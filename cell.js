@@ -32,7 +32,6 @@ class Cell {
                 Cell.initCellLife(i, j, Cell.readCellNextGen(i, j));
             }
         }
-        Cell.nextGen();
         Cell.generationCount = 0;
     }
 
@@ -46,20 +45,7 @@ class Cell {
     }
 
     static update() {
-        Cell.updateLife();
-        Cell.nextGen();
-    }
-
-    static updateLife() {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            Cell.generations[Cell.nextGenIndex][i] = [];
-            for (let j = 0; j < Cell.cellsY; j++) {
-                Cell.generations[Cell.nextGenIndex][i][j] = {
-                    active: Cell.generations[Cell.thisGenIndex][i][j].active,
-                    neighborCount: Cell.generations[Cell.thisGenIndex][i][j].neighborCount
-                }
-            }
-        }
+        Cell.copyToNextGen();
 
         for (let i = 0; i < Cell.cellsX; i++) {
             for (let j = 0; j < Cell.cellsY; j++) {
@@ -80,6 +66,20 @@ class Cell {
                     Cell.updateNeighborCounts(i, j, nextState);
                     Cell.setCell(i, j, nextState);
                     Cell.draw(i, j, nextState);
+                }
+            }
+        }
+
+        Cell.nextGen();
+    }
+
+    static copyToNextGen() {
+        for (let i = 0; i < Cell.cellsX; i++) {
+            Cell.generations[Cell.nextGenIndex][i] = [];
+            for (let j = 0; j < Cell.cellsY; j++) {
+                Cell.generations[Cell.nextGenIndex][i][j] = {
+                    active: Cell.generations[Cell.thisGenIndex][i][j].active,
+                    neighborCount: Cell.generations[Cell.thisGenIndex][i][j].neighborCount
                 }
             }
         }
@@ -105,10 +105,6 @@ class Cell {
             Cell.readNeighborActive(x, yobelow) +
             Cell.readNeighborActive(xoright, yobelow);
 
-        Cell.generations[Cell.nextGenIndex][x][y] = {
-            active,
-            neighborCount
-        };
         Cell.generations[Cell.thisGenIndex][x][y] = {
             active,
             neighborCount
