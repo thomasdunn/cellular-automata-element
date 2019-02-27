@@ -1,18 +1,17 @@
 class Cell {
 
-    static init(cellCountX, cellCountY, width, height, pattern, renderer, stage) {
+    static init(cellCountX, cellCountY, width, height, pattern, graphics) {
         Cell.cellsX = cellCountX;
         Cell.cellsY = cellCountY;
         Cell.width = width;
         Cell.height = height;
 
+        Cell.graphics = graphics;
         Cell.pattern = pattern;
 
         Cell.initGenerations();
         Cell.initLifePattern(pattern);
         Cell.initLife();
-        Cell.initTexture(renderer);
-        Cell.initSprites(stage);
     }
 
     static initGenerations() {
@@ -65,7 +64,7 @@ class Cell {
                 if (cell.active !== nextState) {
                     Cell.updateNeighborCounts(i, j, nextState);
                     Cell.setCell(i, j, nextState);
-                    Cell.draw(i, j, nextState);
+                    Cell.graphics.draw(i, j, nextState);
                 }
             }
         }
@@ -173,34 +172,8 @@ class Cell {
         Cell.generationCount += 1;
     }
 
-    static initTexture(renderer) {
-        let g = new PIXI.Graphics();
-        g.beginFill(0xFFFFFF);
-        g.drawRect(0, 0, Cell.width, Cell.height);
-        Cell.texture = PIXI.RenderTexture.create(g.width, g.height);
-        renderer.render(g, Cell.texture);
-    }
-
-    static initSprites(stage) {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            Cell.sprites[i] = [];
-            for (let j = 0; j < Cell.cellsY; j++) {
-                const sprite = new PIXI.Sprite(Cell.texture);
-                sprite.position.x = i * Cell.width;
-                sprite.position.y = j * Cell.height;
-                stage.addChild(sprite);
-                Cell.sprites[i][j] = sprite;
-            }
-        }
-    }
-
-    static draw(x, y, active) {
-        const sprite = Cell.sprites[x][y];
-        sprite.tint = active ? 0x000000 : 0xFFFFFF;
-    }
 }
 
-Cell.sprites = [];
 Cell.cells = [];
 Cell.generations = [[], []];
 Cell.thisGenIndex = 0;

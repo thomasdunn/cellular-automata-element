@@ -1,6 +1,5 @@
 const perf = new Perf({logEvery: 10});
 const patterns = new Patterns();
-
 const stageWidth = 800;
 const stageHeight = 800;
 const cellCountX = 200;
@@ -29,9 +28,11 @@ const particles = new PIXI.particles.ParticleContainer(cellCountX*cellCountY, {
 });
 stage.addChild(particles);
 
+const graphics = new Graphics(renderer, particles, cellCountX, cellCountY, cellWidth, cellHeight);
+
 patterns.getPattern('zweiback').then(pattern => {
     console.log(JSON.stringify(pattern));
-    Cell.init(cellCountX, cellCountY, cellWidth, cellHeight, pattern, renderer, particles);
+    Cell.init(cellCountX, cellCountY, cellWidth, cellHeight, pattern, graphics);
     requestAnimationFrame(animate);
 });
 
