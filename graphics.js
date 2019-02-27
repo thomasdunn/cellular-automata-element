@@ -1,7 +1,26 @@
 class Graphics {
-    constructor(renderer, stage, cellCountX, cellCountY, cellWidth, cellHeight) {
-        this.renderer = renderer;
-        this.stage = stage;
+    constructor(cellCountX, cellCountY, cellWidth, cellHeight, stageWidth, stageHeight) {
+
+        this.renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
+            backgroundColor: 0x00ff00
+        });
+        console.log(`Renderer: ${this.renderer.type === PIXI.RENDERER_TYPE.WEBGL ? 'WebGL' : 'Canvas'}`);
+
+        this.stage = new PIXI.Container();
+        this.particles = new PIXI.particles.ParticleContainer(cellCountX * cellCountY, {
+            tint: true,
+
+            vertices: false,
+            position: false,
+            rotation: false,
+            uvs: false,
+
+            scale: false,
+            alpha: false
+        });
+
+        this.stage.addChild(this.particles);
+
         this.sprites = [];
         this.cellCountX = cellCountX;
         this.cellCountY = cellCountY;
@@ -28,7 +47,7 @@ class Graphics {
                 const sprite = new PIXI.Sprite(this.texture);
                 sprite.position.x = i * this.cellWidth;
                 sprite.position.y = j * this.cellHeight;
-                this.stage.addChild(sprite);
+                this.particles.addChild(sprite);
                 this.sprites[i][j] = sprite;
             }
         }
@@ -37,5 +56,13 @@ class Graphics {
     draw(x, y, active) {
         const sprite = this.sprites[x][y];
         sprite.tint = active ? 0x000000 : 0xFFFFFF;
+    }
+
+    render() {
+        this.renderer.render(this.stage);
+    }
+
+    get view() {
+        return this.renderer.view;
     }
 }
