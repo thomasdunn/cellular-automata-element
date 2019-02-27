@@ -1,5 +1,3 @@
-const perf = new Perf({logEvery: 10});
-const lexicon = new Lexicon();
 const stageWidth = 800;
 const stageHeight = 800;
 const cellCountX = 200;
@@ -7,21 +5,23 @@ const cellCountY = 200;
 const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
+const perf = new Perf({logEvery: 10});
+const lexicon = new Lexicon();
 const graphics = new Graphics(cellCountX, cellCountY, cellWidth, cellHeight, stageWidth, stageHeight);
+const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.body.appendChild(graphics.view);
 
 lexicon.getData('zweiback').then(data => {
 
-    console.log(JSON.stringify(data.pattern));
-    Cell.init(cellCountX, cellCountY, data, graphics);
+    console.log(JSON.stringify(data));
+    cellManager.init(data);
     requestAnimationFrame(animate);
 
 }).catch (err => console.error(err));
 
 function animate() {
-    Cell.update();
-
+    cellManager.nextGeneration();
     graphics.render();
     perf.tick();
 
