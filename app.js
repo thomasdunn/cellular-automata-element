@@ -1,5 +1,5 @@
 const perf = new Perf({logEvery: 10});
-const patterns = new Patterns();
+const lexicon = new Lexicon();
 const stageWidth = 800;
 const stageHeight = 800;
 const cellCountX = 200;
@@ -30,11 +30,13 @@ stage.addChild(particles);
 
 const graphics = new Graphics(renderer, particles, cellCountX, cellCountY, cellWidth, cellHeight);
 
-patterns.getPattern('zweiback').then(pattern => {
-    console.log(JSON.stringify(pattern));
-    Cell.init(cellCountX, cellCountY, cellWidth, cellHeight, pattern, graphics);
+lexicon.getData('zweiback').then(data => {
+
+    console.log(JSON.stringify(data.pattern));
+    Cell.init(cellCountX, cellCountY, data, graphics);
     requestAnimationFrame(animate);
-});
+
+}).catch (err => console.error(err));
 
 function animate() {
     Cell.update();

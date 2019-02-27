@@ -1,16 +1,13 @@
 class Cell {
 
-    static init(cellCountX, cellCountY, width, height, pattern, graphics) {
+    static init(cellCountX, cellCountY, patternData, graphics) {
         Cell.cellsX = cellCountX;
         Cell.cellsY = cellCountY;
-        Cell.width = width;
-        Cell.height = height;
 
         Cell.graphics = graphics;
-        Cell.pattern = pattern;
 
         Cell.initGenerations();
-        Cell.initLifePattern(pattern);
+        Cell.initLifePattern(patternData);
         Cell.initLife();
     }
 
@@ -34,12 +31,12 @@ class Cell {
         Cell.generationCount = 0;
     }
 
-    static initLifePattern(patternObj) {
-        const offsetX = 100;
-        const offsetY = 100;
+    static initLifePattern(data) {
+        const offsetX = Math.floor(Cell.cellsX / 2 - data.width / 2);
+        const offsetY = Math.floor(Cell.cellsY / 2 - data.height / 2);
 
-        patternObj.pattern.forEach(onCell => {
-            Cell.setCell(onCell[0] + offsetX, onCell[1] + offsetY, true);;
+        data.pattern.forEach(onCell => {
+            Cell.setCell(onCell[0] + offsetX, onCell[1] + offsetY, true);
         });
     }
 
