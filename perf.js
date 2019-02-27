@@ -3,6 +3,7 @@ class Perf {
         this.logEvery = options.logEvery || 0;
         this.logAtEnd = options.logAtEnd || true;
         this.frameStart = performance.now();
+        this.snapshots = [];
 
         this.reset();
     }
@@ -36,6 +37,7 @@ class Perf {
         this.tickCount++;
 
         if (this.logEvery > 0 && this.tickCount % this.logEvery === 0) {
+            this.snapshots.push(this.fps);
             console.log(`${this.fps.toFixed(1)} fps`);
         }
     }
@@ -44,8 +46,14 @@ class Perf {
         if (this.logAtEnd) {
             const maxFps = 1 / (this.minMsPerFrame / 1000);
             const minFps = 1 / (this.maxMsPerFrame / 1000);
-            console.log(`${this.fps.toFixed(1)} fps  [ ${minFps.toFixed(0)}-${maxFps.toFixed(0)} ]`);
+            console.log(`${this.averageFps().toFixed(1)} fps  [ ${minFps.toFixed(0)}-${maxFps.toFixed(0)} ]`);
         }
+    }
+
+    averageFps() {
+        const reducer = (accum, current) => accum + current;
+        const sum = this.snapshots.reduce(reducer, 0);
+        return sum / this.snapshots.length;
     }
 
     get fps() {
