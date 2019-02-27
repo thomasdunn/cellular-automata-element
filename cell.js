@@ -11,7 +11,7 @@ class Cell {
         Cell.initGenerations();
         Cell.initLifePattern(pattern);
         Cell.initLife();
-        Cell.initTextures(renderer);
+        Cell.initTexture(renderer);
         Cell.initSprites(stage);
     }
 
@@ -24,27 +24,6 @@ class Cell {
                 }
             }
         });
-    }
-
-    static initTextures(renderer) {
-        let g = new PIXI.Graphics();
-        g.beginFill(0xFFFFFF);
-        g.drawRect(0, 0, Cell.width, Cell.height);
-        Cell.texture = PIXI.RenderTexture.create(g.width, g.height);
-        renderer.render(g, Cell.texture);
-    }
-
-    static initSprites(stage) {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            Cell.sprites[i] = [];
-            for (let j = 0; j < Cell.cellsY; j++) {
-                const sprite = new PIXI.Sprite(Cell.texture);
-                sprite.position.x = i * Cell.width;
-                sprite.position.y = j * Cell.height;
-                stage.addChild(sprite);
-                Cell.sprites[i][j] = sprite;
-            }
-        }
     }
 
     static initLife() {
@@ -98,16 +77,12 @@ class Cell {
                 }
 
                 if (cell.active !== nextState) {
-                    Cell.setCellLife(i, j, nextState);
+                    Cell.updateNeighborCounts(i, j, nextState);
+                    Cell.setCell(i, j, nextState);
                     Cell.draw(i, j, nextState);
                 }
             }
         }
-    }
-
-    static draw(x, y, active) {
-        const sprite = Cell.sprites[x][y];
-        sprite.tint = active ? 0x000000 : 0xFFFFFF;
     }
 
     static setCell(x, y, active) {
@@ -121,14 +96,14 @@ class Cell {
         const yobelow = y+1;
         
         const neighborCount =
-            Cell.readNeighborCellLife(xoleft, yoabove) +
-            Cell.readNeighborCellLife(x, yoabove) +
-            Cell.readNeighborCellLife(xoright, yoabove) +
-            Cell.readNeighborCellLife(xoleft, y) +
-            Cell.readNeighborCellLife(xoright, y) +
-            Cell.readNeighborCellLife(xoleft, yobelow) +
-            Cell.readNeighborCellLife(x, yobelow) +
-            Cell.readNeighborCellLife(xoright, yobelow);
+            Cell.readNeighborActive(xoleft, yoabove) +
+            Cell.readNeighborActive(x, yoabove) +
+            Cell.readNeighborActive(xoright, yoabove) +
+            Cell.readNeighborActive(xoleft, y) +
+            Cell.readNeighborActive(xoright, y) +
+            Cell.readNeighborActive(xoleft, yobelow) +
+            Cell.readNeighborActive(x, yobelow) +
+            Cell.readNeighborActive(xoright, yobelow);
 
         Cell.generations[Cell.nextGenIndex][x][y] = {
             active,
@@ -140,69 +115,35 @@ class Cell {
         };
     }
 
-    static setCellLife(x, y, active) {
+    static updateNeighborCounts(x, y, active) {
         const delta = active ? 1 : -1;
         const xoleft = x-1;
         const xoright = x+1;
         const yoabove = y-1;
         const yobelow = y+1;
 
-        let cell = Cell.safeGetNeighborCell(xoleft, yoabove);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoleft, yoabove, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(x, yoabove);
-        if (cell) {
-            Cell.safeSetNeighborCell(x, yoabove, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(xoright, yoabove);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoright, yoabove, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(xoleft, y);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoleft, y, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(xoright, y);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoright, y, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(xoleft, yobelow);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoleft, yobelow, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(x, yobelow);
-        if (cell) {
-            Cell.safeSetNeighborCell(x, yobelow, cell.neighborCount + delta)
-        }
-        cell = Cell.safeGetNeighborCell(xoright, yobelow);
-        if (cell) {
-            Cell.safeSetNeighborCell(xoright, yobelow, cell.neighborCount + delta)
-        }
-
-        Cell.generations[Cell.nextGenIndex][x][y].active = active;
+        Cell.updateNeighborCount(xoleft, yoabove, delta);
+        Cell.updateNeighborCount(x, yoabove, delta);
+        Cell.updateNeighborCount(xoright, yoabove, delta);
+        Cell.updateNeighborCount(xoleft, y, delta);
+        Cell.updateNeighborCount(xoright, y, delta);
+        Cell.updateNeighborCount(xoleft, yobelow, delta);
+        Cell.updateNeighborCount(x, yobelow, delta);
+        Cell.updateNeighborCount(xoright, yobelow, delta);
     }
 
-    static safeGetNeighborCell(x, y) {
-        const col = Cell.generations[Cell.nextGenIndex][x];
-        if (col === undefined) {
-            return undefined
-        }
-        return col[y];
-    }
-
-    static safeSetNeighborCell(x, y, count) {
+    static updateNeighborCount(x, y, delta) {
         const col = Cell.generations[Cell.nextGenIndex][x];
         if (col !== undefined) {
             const cell = col[y];
             if (cell !== undefined) {
-                cell.neighborCount = count;
+                cell.neighborCount += delta;
             }
         }
     }
 
     // returns 1 or 0
-    static readNeighborCellLife(x, y) {
+    static readNeighborActive(x, y) {
         const cell = (Cell.generations[Cell.nextGenIndex][x]||[])[y];
         if (cell === undefined) {
             return 0;
@@ -234,6 +175,32 @@ class Cell {
         Cell.thisGenIndex = Cell.nextGenIndex;
         Cell.nextGenIndex = temp;
         Cell.generationCount += 1;
+    }
+
+    static initTexture(renderer) {
+        let g = new PIXI.Graphics();
+        g.beginFill(0xFFFFFF);
+        g.drawRect(0, 0, Cell.width, Cell.height);
+        Cell.texture = PIXI.RenderTexture.create(g.width, g.height);
+        renderer.render(g, Cell.texture);
+    }
+
+    static initSprites(stage) {
+        for (let i = 0; i < Cell.cellsX; i++) {
+            Cell.sprites[i] = [];
+            for (let j = 0; j < Cell.cellsY; j++) {
+                const sprite = new PIXI.Sprite(Cell.texture);
+                sprite.position.x = i * Cell.width;
+                sprite.position.y = j * Cell.height;
+                stage.addChild(sprite);
+                Cell.sprites[i][j] = sprite;
+            }
+        }
+    }
+
+    static draw(x, y, active) {
+        const sprite = Cell.sprites[x][y];
+        sprite.tint = active ? 0x000000 : 0xFFFFFF;
     }
 }
 
