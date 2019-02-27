@@ -11,8 +11,9 @@ const cellHeight = stageHeight / cellCountY;
 const renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {
     backgroundColor: 0x00ff00
 });
-// renderer.view.style.display = "block";
 document.body.appendChild(renderer.view);
+
+console.log(`Renderer: ${renderer.type === PIXI.RENDERER_TYPE.WEBGL ? 'WebGL' : 'Canvas'}`);
 
 const stage = new PIXI.Container();
 const particles = new PIXI.particles.ParticleContainer(cellCountX*cellCountY, {
@@ -28,10 +29,6 @@ const particles = new PIXI.particles.ParticleContainer(cellCountX*cellCountY, {
 });
 stage.addChild(particles);
 
-
-console.log(`Canvas: ${PIXI.RENDERER_TYPE.CANVAS} WebGL ${PIXI.RENDERER_TYPE.WEBGL}`);
-console.log(`This renderer: ${renderer.type}`);
-
 patterns.getPattern('zweiback').then(pattern => {
     console.log(JSON.stringify(pattern));
     Cell.init(cellCountX, cellCountY, cellWidth, cellHeight, pattern, renderer, particles);
@@ -44,7 +41,7 @@ function animate() {
     renderer.render(stage);
     perf.tick();
 
-    if (perf.ticks === 1200) {
+    if (perf.ticks === 500) {
         perf.end();
         return;
     }

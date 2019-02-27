@@ -9,7 +9,6 @@ class Cell {
         Cell.pattern = pattern;
 
         Cell.initGenerations();
-        // Cell.initRandom();
         Cell.initLifePattern(pattern);
         Cell.initLife();
         Cell.initTextures(renderer);
@@ -28,41 +27,24 @@ class Cell {
     }
 
     static initTextures(renderer) {
-        Cell.textures = {};
-
-        // let g = new PIXI.Graphics();
-        // g.beginFill(0x000000);
-        // g.drawRect(0, 0, Cell.width, Cell.height);
-        // Cell.textures.on = PIXI.RenderTexture.create(g.width, g.height);
-        // renderer.render(g, Cell.textures.on);
-
         let g = new PIXI.Graphics();
         g.beginFill(0xFFFFFF);
         g.drawRect(0, 0, Cell.width, Cell.height);
-        Cell.textures.off = PIXI.RenderTexture.create(g.width, g.height);
-        renderer.render(g, Cell.textures.off);
+        Cell.texture = PIXI.RenderTexture.create(g.width, g.height);
+        renderer.render(g, Cell.texture);
     }
 
     static initSprites(stage) {
         for (let i = 0; i < Cell.cellsX; i++) {
             Cell.sprites[i] = [];
             for (let j = 0; j < Cell.cellsY; j++) {
-                const sprite = new PIXI.Sprite(Cell.getTexture(false));
+                const sprite = new PIXI.Sprite(Cell.texture);
                 sprite.position.x = i * Cell.width;
                 sprite.position.y = j * Cell.height;
                 stage.addChild(sprite);
                 Cell.sprites[i][j] = sprite;
             }
         }
-    }
-
-    static initCheckerboard() {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            for (let j = 0; j < Cell.cellsY; j++) {
-                Cell.setCell(i, j, (i + j) % 2 === 1);
-            }
-        }
-        Cell.nextGen();
     }
 
     static initLife() {
@@ -73,15 +55,6 @@ class Cell {
         }
         Cell.nextGen();
         Cell.generationCount = 0;
-    }
-
-    static initRandom() {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            for (let j = 0; j < Cell.cellsY; j++) {
-                Cell.setCell(i, j, Cell.randomBoolean());
-            }
-        }
-        Cell.nextGen();
     }
 
     static initLifePattern(patternObj) {
@@ -98,29 +71,7 @@ class Cell {
         Cell.nextGen();
     }
 
-    static updateCheckerboard() {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            for (let j = 0; j < Cell.cellsY; j++) {
-                const next = ! Cell.readCell(i, j);
-                Cell.setCell(i, j, next);
-                Cell.draw(i, j, next);
-            }
-        }
-    }
-
     static updateLife() {
-
-        // render 63% / update 31%
-        // for (let i = 0; i < Cell.cellsX; i++) {
-        //     Cell.generations[Cell.nextGenIndex][i] = [];
-        //     for (let j = 0; j < Cell.cellsY; j++) {
-        //         Cell.generations[Cell.nextGenIndex][i][j] = {
-        //             ...Cell.generations[Cell.thisGenIndex][i][j]
-        //         }
-        //     }
-        // }
-
-        // render 80% / update 16%
         for (let i = 0; i < Cell.cellsX; i++) {
             Cell.generations[Cell.nextGenIndex][i] = [];
             for (let j = 0; j < Cell.cellsY; j++) {
@@ -130,9 +81,6 @@ class Cell {
                 }
             }
         }
-
-        // render 24% / update 74%
-        // Cell.generations[Cell.nextGenIndex] = JSON.parse(JSON.stringify(Cell.generations[Cell.thisGenIndex]));
 
         for (let i = 0; i < Cell.cellsX; i++) {
             for (let j = 0; j < Cell.cellsY; j++) {
@@ -157,29 +105,9 @@ class Cell {
         }
     }
 
-    static updateRandom() {
-        for (let i = 0; i < Cell.cellsX; i++) {
-            for (let j = 0; j < Cell.cellsY; j++) {
-                const next = Cell.randomBoolean();
-                Cell.setCell(i, j, next);
-                Cell.draw(i, j, next);
-            }
-        }
-    }
-
-    static randomBoolean() {
-        return Math.random() >= 0.5;
-    }
-
     static draw(x, y, active) {
         const sprite = Cell.sprites[x][y];
         sprite.tint = active ? 0x000000 : 0xFFFFFF;
-        // sprite.texture = Cell.getTexture(active);
-    }
-
-    static getTexture(active) {
-        const textureName = active ? 'on' : 'off';
-        return Cell.textures[textureName];
     }
 
     static setCell(x, y, active) {
@@ -196,7 +124,7 @@ class Cell {
             Cell.readNeighborCellLife(x-1, y+1) +
             Cell.readNeighborCellLife(x, y+1) +
             Cell.readNeighborCellLife(x+1, y+1);
-// console.log(`neighbors: ${neighborCount}`);
+
         Cell.generations[Cell.nextGenIndex][x][y] = {
             active,
             neighborCount
