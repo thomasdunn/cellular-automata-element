@@ -67,7 +67,6 @@ class CellManager {
                 if (cell.active !== nextState) {
                     this.updateNeighborCounts(i, j, nextState);
                     this.setCell(i, j, nextState);
-                    this.graphics.draw(i, j, nextState);
                 }
             }
         }
@@ -90,13 +89,14 @@ class CellManager {
 
     setCell(x, y, active) {
         this.generations[this.nextGenIndex][x][y].active = active;
+        this.graphics.draw(x, y, active);
     }
 
     initCellLife(x, y, active) {
-        const xoleft = x-1;
-        const xoright = x+1;
-        const yoabove = y-1;
-        const yobelow = y+1;
+        const xoleft = x === 0 ? this.cellsX-1 : x-1;
+        const xoright = x === this.cellsX-1 ? 0 : x+1;
+        const yoabove = y === 0 ? this.cellsY-1 : y-1;
+        const yobelow = y === this.cellsY-1 ? 0 : y+1;
         
         const neighborCount =
             this.readNeighborActive(xoleft, yoabove) +
@@ -116,10 +116,10 @@ class CellManager {
 
     updateNeighborCounts(x, y, active) {
         const delta = active ? 1 : -1;
-        const xoleft = x-1;
-        const xoright = x+1;
-        const yoabove = y-1;
-        const yobelow = y+1;
+        const xoleft = x === 0 ? this.cellsX-1 : x-1;
+        const xoright = x === this.cellsX-1 ? 0 : x+1;
+        const yoabove = y === 0 ? this.cellsY-1 : y-1;
+        const yobelow = y === this.cellsY-1 ? 0 : y+1;
 
         this.updateNeighborCount(xoleft, yoabove, delta);
         this.updateNeighborCount(x, yoabove, delta);
