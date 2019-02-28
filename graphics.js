@@ -1,4 +1,6 @@
-class Graphics {
+import './pixi.min.js';
+
+export class Graphics {
     constructor(cellCountX, cellCountY, cellWidth, cellHeight, stageWidth, stageHeight) {
 
         this.renderer = PIXI.autoDetectRenderer(stageWidth, stageHeight, {

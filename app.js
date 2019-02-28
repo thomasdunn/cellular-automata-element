@@ -1,3 +1,8 @@
+import {Perf} from './perf.js';
+import {Lexicon} from './lexicon.js';
+import {Graphics} from './graphics.js';
+import {CellManager} from './cellmanager.js';
+
 const stageWidth = 800;
 const stageHeight = 800;
 const cellCountX = 200;

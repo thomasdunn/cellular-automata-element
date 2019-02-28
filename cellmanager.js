@@ -1,4 +1,4 @@
-class CellManager {
+export class CellManager {
 
     constructor(cellCountX, cellCountY, graphics) {
         this.cellsX = cellCountX;

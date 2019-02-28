@@ -1,4 +1,4 @@
-class Perf {
+export class Perf {
     constructor(options) {
         this.logEvery = options.logEvery || 0;
         this.logAtEnd = options.logAtEnd || true;

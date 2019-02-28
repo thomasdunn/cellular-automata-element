@@ -1,4 +1,4 @@
-class Lexicon {
+export class Lexicon {
     async getData(patternName) {
         return fetch('lexicon.json')
             .then(function(response) {
