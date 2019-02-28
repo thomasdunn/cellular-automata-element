@@ -39,6 +39,8 @@ function animate() {
 }
 
 // TODO
-// more simply computing offsets for neighbor counting
-// implement wrapping
-// try class objects for cells rather than object literals to see if helps perf
+// main perf issue... array copying, its taking more than rendering
+    // use typedarray, 5 bits w/ bitwise ops for cell state (instead of active, neighborCount)
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set
+        // https://jsperf.com/typedarray-set-vs-loop/3
