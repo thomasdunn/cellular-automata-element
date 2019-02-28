@@ -3,10 +3,10 @@ import {Lexicon} from './lexicon.js';
 import {Graphics} from './graphics.js';
 import {CellManager} from './cellmanager.js';
 
-const stageWidth = 800;
-const stageHeight = 800;
-const cellCountX = 200;
-const cellCountY = 200;
+const stageWidth = 900;
+const stageHeight = 900;
+const cellCountX = 300;
+const cellCountY = 300;
 const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
@@ -17,7 +17,7 @@ const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.getElementById('container').appendChild(graphics.view);
 
-lexicon.getData('zweiback').then(data => {
+lexicon.getData('space rake').then(data => {
 
     console.log(JSON.stringify(data));
     cellManager.init(data);
@@ -30,7 +30,7 @@ function animate() {
     graphics.render();
     perf.tick();
 
-    if (perf.ticks === 500) {
+    if (perf.ticks === 1000) {
         perf.end();
         return;
     }

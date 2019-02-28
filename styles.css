@@ -4,6 +4,7 @@ html, body {
 
 body {
     background-color: gray;
+    margin: 0;
 }
 
 #container {
