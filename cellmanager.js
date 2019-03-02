@@ -4,7 +4,6 @@ export class CellManager {
         this.cellsX = cellCountX;
         this.cellsY = cellCountY;
         this.graphics = graphics;
-        this.cells = [];
         this.generations = [[], []];
         this.thisGenIndex = 0;
         this.nextGenIndex = 1;
@@ -18,14 +17,14 @@ export class CellManager {
     }
 
     initGenerations() {
-        this.generations.forEach(gen => {
-            for (let i = 0; i < this.cellsX; i++) {
-                gen[i] = [];
-                for (let j = 0; j < this.cellsY; j++) {
-                    this.initCell(gen, i, j, false);
-                }
-            }
-        });
+        const length = this.cellsY;
+
+        for (let i = 0; i < this.cellsX; i++) {
+            // slightly better perf when the two arrays share the same array buffer (just different offsets inside of it)
+            const buffer = new ArrayBuffer(2 * length);
+            this.generations[0][i] = new Uint8Array(buffer, 0, length);
+            this.generations[1][i] = new Uint8Array(buffer, length, length);
+        }
     }
 
     initLife() {
@@ -52,19 +51,21 @@ export class CellManager {
         for (let i = 0; i < this.cellsX; i++) {
             for (let j = 0; j < this.cellsY; j++) {
                 const cell = this.readCellLife(i, j);
-                if (! cell.active && cell.neighborCount === 0) {
+                const neighborCount = cell >> 1;
+                const active = (cell & 0b01) === 1;
+                if (! active && neighborCount === 0) {
                     continue;
                 }
 
                 let nextState = false;
-                if (cell.active && cell.neighborCount === 2 || cell.neighborCount === 3) {
+                if (active && neighborCount === 2 || neighborCount === 3) {
                     nextState = true;
                 }
-                else if (! cell.active && cell.neighborCount === 3) {
+                else if (! active && neighborCount === 3) {
                     nextState = true;
                 }
 
-                if (cell.active !== nextState) {
+                if (active !== nextState) {
                     this.updateNeighborCounts(i, j, nextState);
                     this.setCell(i, j, nextState);
                 }
@@ -77,18 +78,20 @@ export class CellManager {
 
     copyCellDataThisToNext() {
         for (let i = 0; i < this.cellsX; i++) {
-            this.generations[this.nextGenIndex][i] = [];
-            for (let j = 0; j < this.cellsY; j++) {
-                this.generations[this.nextGenIndex][i][j] = {
-                    active: this.generations[this.thisGenIndex][i][j].active,
-                    neighborCount: this.generations[this.thisGenIndex][i][j].neighborCount
-                }
-            }
+            this.generations[this.nextGenIndex][i].set(this.generations[this.thisGenIndex][i]);
         }
     }
 
     setCell(x, y, active) {
-        this.generations[this.nextGenIndex][x][y].active = active;
+        if (active) {
+            // turn on LSB to indicate active
+            this.generations[this.nextGenIndex][x][y] |= 0b01;
+        }
+        else {
+            // turn off LSB to indicate inactive
+            this.generations[this.nextGenIndex][x][y] &= ~0b01;
+        }
+
         this.graphics.draw(x, y, active);
     }
 
@@ -108,14 +111,19 @@ export class CellManager {
             this.readNeighborActive(x, yobelow) +
             this.readNeighborActive(xoright, yobelow);
 
-        this.generations[this.thisGenIndex][x][y] = {
-            active,
-            neighborCount
-        };
+        if (active) {
+            // shift the neighbor count to start at 2nd lowest bit, add cell active state as first bit
+            this.generations[this.thisGenIndex][x][y] = neighborCount << 1 | 0b01;
+        }
+        else {
+            this.generations[this.thisGenIndex][x][y] = neighborCount << 1;
+        }
     }
 
     updateNeighborCounts(x, y, active) {
-        const delta = active ? 1 : -1;
+        // const delta = active ? 1 : -1;
+        // delta of 2 (not 1) because we're talking binary
+        const delta = active ? 2 : -2;
         const xoleft = x === 0 ? this.cellsX-1 : x-1;
         const xoright = x === this.cellsX-1 ? 0 : x+1;
         const yoabove = y === 0 ? this.cellsY-1 : y-1;
@@ -132,37 +140,17 @@ export class CellManager {
     }
 
     updateNeighborCount(x, y, delta) {
-        const col = this.generations[this.nextGenIndex][x];
-        if (col !== undefined) {
-            const cell = col[y];
-            if (cell !== undefined) {
-                cell.neighborCount += delta;
-            }
-        }
+        this.generations[this.nextGenIndex][x][y] += delta;
     }
 
     // returns 1 or 0
     readNeighborActive(x, y) {
-        const cell = (this.generations[this.nextGenIndex][x]||[])[y];
-        if (cell === undefined) {
-            return 0;
-        }
-        return cell.active ? 1 : 0;
+        return this.generations[this.nextGenIndex][x][y] & 0b01;
     }
 
-    initCell(gen, x, y, active) {
-        if (! gen[x][y]) {
-            gen[x][y] = {
-                active
-            };
-        }
-        else {
-            gen[x][y].active = active;
-        }
-    }
-
+    // return boolean for active
     readCellNextGen(x, y) {
-        return this.generations[this.nextGenIndex][x][y].active;
+        return this.generations[this.nextGenIndex][x][y] & 0b01 === 1;
     }
 
     readCellLife(x, y) {

@@ -1,5 +1,5 @@
 export class Perf {
-    constructor(options) {
+    constructor(options = {}) {
         this.logEvery = options.logEvery || 0;
         this.logAtEnd = options.logAtEnd || true;
         this.frameStart = performance.now();
@@ -16,6 +16,10 @@ export class Perf {
         this.minMsPerFrame = Number.MAX_VALUE;
         this.maxMsPerFrame = Number.MIN_VALUE;
         this.frameStart = performance.now();
+    }
+
+    get elapsed() {
+        return performance.now() - this.frameStart;
     }
 
     tick() {

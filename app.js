@@ -3,10 +3,30 @@ import {Lexicon} from './lexicon.js';
 import {Graphics} from './graphics.js';
 import {CellManager} from './cellmanager.js';
 
-const stageWidth = 900;
-const stageHeight = 900;
-const cellCountX = 300;
-const cellCountY = 300;
+// 35fps,32.3,32.2
+// const stageWidth = 1200;
+// const stageHeight = 1200;
+// const cellCountX = 600;
+// const cellCountY = 600;
+
+// 44fps
+// const stageWidth = 1000;
+// const stageHeight = 1000;
+// const cellCountX = 500;
+// const cellCountY = 500;
+
+// 59fps
+const stageWidth = 800;
+const stageHeight = 800;
+const cellCountX = 400;
+const cellCountY = 400;
+
+// 59fps
+// const stageWidth = 90;
+// const stageHeight = 90;
+// const cellCountX = 300;
+// const cellCountY = 300;
+
 const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
@@ -17,7 +37,7 @@ const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.getElementById('container').appendChild(graphics.view);
 
-lexicon.getData('space rake').then(data => {
+lexicon.getData('Cordership').then(data => {
 
     console.log(JSON.stringify(data));
     cellManager.init(data);
@@ -40,7 +60,3 @@ function animate() {
 
 // TODO
 // main perf issue... array copying, its taking more than rendering
-    // use typedarray, 5 bits w/ bitwise ops for cell state (instead of active, neighborCount)
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set
-        // https://jsperf.com/typedarray-set-vs-loop/3
