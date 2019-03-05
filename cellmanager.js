@@ -5,15 +5,18 @@ export class CellManager {
         this.cellsY = cellCountY;
         this.graphics = graphics;
         this.generations = [[], []];
+        this.frameUpdates = {on: [], off: []};
         this.thisGenIndex = 0;
         this.nextGenIndex = 1;
         this.generationCount = 0;
     }
 
     init(patternData) {
+        this.resetFrameUpdates();
         this.initGenerations();
         this.initPattern(patternData);
         this.initLife();
+        this.updateFrame();
     }
 
     initGenerations() {
@@ -45,7 +48,17 @@ export class CellManager {
         });
     }
 
+    resetFrameUpdates() {
+        this.frameUpdates.on.length = 0;
+        this.frameUpdates.off.length = 0;
+    }
+
+    updateFrame() {
+        this.graphics.setBufferData(this.frameUpdates.on, this.frameUpdates.off);
+    }
+
     nextGeneration() {
+        this.resetFrameUpdates();
         this.copyCellDataThisToNext();
 
         for (let i = 0; i < this.cellsX; i++) {
@@ -72,6 +85,7 @@ export class CellManager {
             }
         }
 
+        this.updateFrame();
         this.generationCount++;
         this.swapGenerations();
     }
@@ -86,13 +100,13 @@ export class CellManager {
         if (active) {
             // turn on LSB to indicate active
             this.generations[this.nextGenIndex][x][y] |= 0b01;
+            this.frameUpdates.on.push(x, y);
         }
         else {
             // turn off LSB to indicate inactive
             this.generations[this.nextGenIndex][x][y] &= ~0b01;
+            this.frameUpdates.off.push(x, y);
         }
-
-        this.graphics.draw(x, y, active);
     }
 
     initCellLife(x, y, active) {

@@ -7,6 +7,10 @@ body {
     margin: 0;
 }
 
+canvas {
+    background: white;
+}
+
 #container {
     height: 100%;
     display: flex;
