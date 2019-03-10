@@ -16,7 +16,7 @@ export class RleParser {
         let rule;
 
         // _________________________  x   =    3      ,   y   =    3         ,   rule   =   B3/S23
-        const match = line.match(/^\s*x\s*=\s*(\d+)\s*,\s*y\s*=\s*(\d+)(?:\s*,\s*rule\s*=\s*(.*))?$/);
+        const match = line.match(/^\s*x\s*=\s*(\d+)\s*,\s*y\s*=\s*(\d+)(?:\s*,\s*rule\s*=\s*(.*))?$/m);
         if (match !== null) {
             width = parseInt(match[1], 10);
             height = parseInt(match[2], 10);
@@ -101,7 +101,7 @@ export class RleParser {
         let match = pattern.match(nextItemRegExp);
 
         while (match !== null) {
-            num = match[1];
+            num = parseInt(match[1] || 1, 10);
             chr = match[2];
 
             if (chr === '$') {

@@ -11,8 +11,8 @@ import {CellManager} from './cellmanager.js';
 // testing... nearly 60fps with one million cells!!!
 const stageWidth = 1000;
 const stageHeight = 1000;
-const cellCountX = 1000;
-const cellCountY = 1000;
+const cellCountX = 100;
+const cellCountY = 100;
 
 // // 35fps,32.3,32.2,35
 // const stageWidth = 1200;
@@ -48,7 +48,7 @@ const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.getElementById('container').appendChild(graphics.view);
 
-lexicon.getData('spacefiller').then(data => {
+lexicon.getRleData('vacuumgun').then(data => {
 
     console.log(JSON.stringify(data));
     cellManager.init(data);
