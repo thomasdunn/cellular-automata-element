@@ -176,4 +176,18 @@ export class CellManager {
         this.thisGenIndex = this.nextGenIndex;
         this.nextGenIndex = temp;
     }
+
+    toCellsText() {
+        let text = '';
+        for (let y = 0; y < this.cellsY; y++) {
+            let line = '';
+            for (let x = 0; x < this.cellsX; x++) {
+                const active = this.generations[this.thisGenIndex][x][y] & 0b01 === 1;
+                line += active ? 'O' : '.';
+            }
+            line = line.substring(0, line.lastIndexOf('O') + 1);
+            text += line + '\n';
+        }
+        return text;
+    }
 }

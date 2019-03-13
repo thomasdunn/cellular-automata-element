@@ -3,16 +3,16 @@ import {Lexicon} from './lexicon.js';
 import {Graphics} from './graphics.js';
 import {CellManager} from './cellmanager.js';
 
-// const stageWidth = 90;
-// const stageHeight = 90;
-// const cellCountX = 9;
-// const cellCountY = 9;
-
-// testing... nearly 60fps with one million cells!!!
 const stageWidth = 1000;
 const stageHeight = 1000;
-const cellCountX = 100;
-const cellCountY = 100;
+const cellCountX = 500;
+const cellCountY = 500;
+
+// testing... nearly 60fps with one million cells!!!
+// const stageWidth = 1000;
+// const stageHeight = 1000;
+// const cellCountX = 1000;
+// const cellCountY = 1000;
 
 // // 35fps,32.3,32.2,35
 // const stageWidth = 1200;
@@ -48,11 +48,12 @@ const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.getElementById('container').appendChild(graphics.view);
 
-lexicon.getRleData('vacuumgun').then(data => {
+lexicon.getRleData('vacuumgunpulling').then(data => {
 
     console.log(JSON.stringify(data));
     cellManager.init(data);
     graphics.render();
+    // console.log(cellManager.toCellsText());
 
     requestAnimationFrame(animate);
     // setTimeout(() => requestAnimationFrame(animate), 256);

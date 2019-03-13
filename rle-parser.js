@@ -44,7 +44,8 @@ export class RleParser {
         const patternLines = lines
             .filter(line => ! this.isComment(line))
             .filter(line => ! this.isHeader(line));
-        let patternLine = patternLines.join('');
+        // join multiple lines into one, strip out whitespaces, including newlines
+        let patternLine = patternLines.join('').replace(/\s/g, '');
         let endIndicatorIndex = patternLine.indexOf('!');
         if (endIndicatorIndex !== -1) {
             patternLine = patternLine.substr(0, endIndicatorIndex);

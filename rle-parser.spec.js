@@ -35,4 +35,9 @@ bob$2bo$3o!`;
             [2, 2]
         ])
     });
+
+    it('#getPattern parses out the pattern as single line', () => {
+        const pattern = parser.getPattern(['#C comment line here', 'bob$\n', '\n2b\n', 'o$3o!\n']);
+        expect(pattern).to.be.equal('bob$2bo$3o');
+    });
 });
