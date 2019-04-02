@@ -33,7 +33,7 @@ export class CellManager {
     initLife() {
         for (let i = 0; i < this.cellsX; i++) {
             for (let j = 0; j < this.cellsY; j++) {
-                this.initCellLife(i, j, this.readCellNextGen(i, j));
+                this.initCellLife(i, j, this.readNextActive(i, j));
             }
         }
         this.generationCount = 0;
@@ -116,14 +116,14 @@ export class CellManager {
         const yobelow = y === this.cellsY-1 ? 0 : y+1;
         
         const neighborCount =
-            this.readNeighborActive(xoleft, yoabove) +
-            this.readNeighborActive(x, yoabove) +
-            this.readNeighborActive(xoright, yoabove) +
-            this.readNeighborActive(xoleft, y) +
-            this.readNeighborActive(xoright, y) +
-            this.readNeighborActive(xoleft, yobelow) +
-            this.readNeighborActive(x, yobelow) +
-            this.readNeighborActive(xoright, yobelow);
+            this.readNextActiveAsNum(xoleft, yoabove) +
+            this.readNextActiveAsNum(x, yoabove) +
+            this.readNextActiveAsNum(xoright, yoabove) +
+            this.readNextActiveAsNum(xoleft, y) +
+            this.readNextActiveAsNum(xoright, y) +
+            this.readNextActiveAsNum(xoleft, yobelow) +
+            this.readNextActiveAsNum(x, yobelow) +
+            this.readNextActiveAsNum(xoright, yobelow);
 
         if (active) {
             // shift the neighbor count to start at 2nd lowest bit, add cell active state as first bit
@@ -158,12 +158,12 @@ export class CellManager {
     }
 
     // returns 1 or 0
-    readNeighborActive(x, y) {
+    readNextActiveAsNum(x, y) {
         return this.generations[this.nextGenIndex][x][y] & 0b01;
     }
 
-    // return boolean for active
-    readCellNextGen(x, y) {
+    // return boolean
+    readNextActive(x, y) {
         return this.generations[this.nextGenIndex][x][y] & 0b01 === 1;
     }
 

@@ -1,7 +1,10 @@
 import {Perf} from './perf.js';
-import {Lexicon} from './lexicon.js';
+import {PatternLoader} from './pattern-loader.js'
 import {Graphics} from './graphics.js';
-import {CellManager} from './cellmanager.js';
+import {CellManager} from './cell-manager.js';
+
+const collectionsUrl = 'node_modules/cellular-automata-patterns';
+const collectionName = 'conwaylife';
 
 const stageWidth = 1000;
 const stageHeight = 1000;
@@ -42,23 +45,29 @@ const cellWidth = stageWidth / cellCountX;
 const cellHeight = stageHeight / cellCountY;
 
 const perf = new Perf({logEvery: 10});
-const lexicon = new Lexicon();
+const patternLoader = new PatternLoader(collectionsUrl);
 const graphics = new Graphics(cellWidth, cellHeight, stageWidth, stageHeight);
 const cellManager = new CellManager(cellCountX, cellCountY, graphics);
 
 document.getElementById('container').appendChild(graphics.view);
 
-lexicon.getRleData('vacuumgunpulling').then(data => {
+patternLoader.getPatternIndex().then(index => {
 
-    console.log(JSON.stringify(data));
-    cellManager.init(data);
-    graphics.render();
-    // console.log(cellManager.toCellsText());
+    console.log(index);
 
-    requestAnimationFrame(animate);
-    // setTimeout(() => requestAnimationFrame(animate), 256);
+    patternLoader.getRleData(collectionName, 'vacuumgunpulling').then(data => {
 
-}).catch (err => console.error(err));
+        console.log(JSON.stringify(data));
+        cellManager.init(data);
+        graphics.render();
+        // console.log(cellManager.toCellsText());
+    
+        requestAnimationFrame(animate);
+        // setTimeout(() => requestAnimationFrame(animate), 256);
+    
+    }).catch (err => console.error(err));
+
+});
 
 function animate() {
     cellManager.nextGeneration();
