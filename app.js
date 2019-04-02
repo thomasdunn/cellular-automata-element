@@ -1,15 +1,16 @@
 import {Perf} from './perf.js';
-import {PatternLoader} from './pattern-loader.js'
+import {PatternLoader} from './pattern-loader.js';
+import {PatternSelector} from './pattern-selector.js';
 import {Graphics} from './graphics.js';
 import {CellManager} from './cell-manager.js';
 
 const collectionsUrl = 'node_modules/cellular-automata-patterns';
 const collectionName = 'conwaylife';
 
-const stageWidth = 1000;
-const stageHeight = 1000;
-const cellCountX = 500;
-const cellCountY = 500;
+const stageWidth = 800;
+const stageHeight = 800;
+const cellCountX = 400;
+const cellCountY = 400;
 
 // testing... nearly 60fps with one million cells!!!
 // const stageWidth = 1000;
@@ -48,25 +49,36 @@ const perf = new Perf({logEvery: 10});
 const patternLoader = new PatternLoader(collectionsUrl);
 const graphics = new Graphics(cellWidth, cellHeight, stageWidth, stageHeight);
 const cellManager = new CellManager(cellCountX, cellCountY, graphics);
-
+let frameId;
 document.getElementById('container').appendChild(graphics.view);
 
 patternLoader.getPatternIndex().then(index => {
+    const collection = index.find(obj => obj.hasOwnProperty(collectionName));
+    const patterns = collection[collectionName];
+    if (patterns) {
+        const patternSelector = new PatternSelector(patterns);
+        patternSelector.render(document.getElementById('selector'));
+        patternSelector.addEventListener('patternselected', function(e) {
+            const [, patternName] = e.detail.match(/^([^.]+)\.\w+$/);
+            patternLoader.getRleData(collectionName, patternName).then(data => {
 
-    console.log(index);
+                console.log(JSON.stringify(data));
+                cellManager.init(data);
+                
+                if (frameId) {
+                    cancelAnimationFrame(frameId);
+                }
 
-    patternLoader.getRleData(collectionName, 'vacuumgunpulling').then(data => {
-
-        console.log(JSON.stringify(data));
-        cellManager.init(data);
-        graphics.render();
-        // console.log(cellManager.toCellsText());
-    
-        requestAnimationFrame(animate);
-        // setTimeout(() => requestAnimationFrame(animate), 256);
-    
-    }).catch (err => console.error(err));
-
+                graphics.clear();
+                graphics.render();
+                // console.log(cellManager.toCellsText());
+            
+                frameId = requestAnimationFrame(animate);
+                // setTimeout(() => requestAnimationFrame(animate), 256);
+            
+            }).catch (err => console.error(err));
+        });
+    }
 });
 
 function animate() {
@@ -79,6 +91,6 @@ function animate() {
         return;
     }
 
-    requestAnimationFrame(animate);
+    frameId = requestAnimationFrame(animate);
     // setTimeout(() => requestAnimationFrame(animate), 256);
 }
