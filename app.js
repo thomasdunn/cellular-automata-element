@@ -15,8 +15,8 @@ import {CellManager} from './cell-manager.js';
 // ** media style contorls: play, pause, speed select, step
 
 class App {
-    collectionsUrl = 'node_modules/cellular-automata-patterns';
-    collectionName = 'conwaylife';
+    collectionsUrl;
+    collectionName;
     
     stageWidth = 800;
     stageHeight = 800;
@@ -28,7 +28,10 @@ class App {
 
     frameId;
 
-    constructor() {
+    constructor(collectionsUrl, collectionsName) {
+        this.collectionsUrl = collectionsUrl;
+        this.collectionName = collectionsName;
+        
         this.perf = new Perf({logEvery: 10});
         this.patternLoader = new PatternLoader(this.collectionsUrl);
         this.graphics = new Graphics(this.cellWidth, this.cellHeight, this.stageWidth, this.stageHeight);
@@ -96,6 +99,11 @@ class App {
 }
 
 (async() => {
-    const app = new App();
+    // if on development port for local development, load patterns locally
+    const url = document.location.port === '' ?
+        'https://raw.githubusercontent.com/thomasdunn/cellular-automata-patterns/master' :
+        'node_modules/cellular-automata-patterns';
+
+    const app = new App(url, 'conwaylife');
     app.init();
 })();
