@@ -1,11 +1,8 @@
 {
-  "name": "life",
-  "version": "1.0.0",
-  "description": "",
+  "name": "cellular-automata-element",
+  "version": "0.0.1",
+  "description": "Cellular automata web component",
   "main": "app.js",
-  "directories": {
-    "test": "tests"
-  },
   "dependencies": {
     "cellular-automata-patterns": "^1.0.4"
   },
@@ -25,9 +22,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/tomdunn/life.git"
+    "url": "git@github.com:thomasdunn/cellular-automata-element.git"
   },
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/tomdunn/life#readme"
+  "author": "Tom Dunn",
+  "license": "MIT",
+  "homepage": "https://github.com/thomasdunn/cellular-automata-element#readme",
+  "bugs": {
+    "url": "https://github.com/thomasdunn/cellular-automata-element/issues"
+  }
 }
