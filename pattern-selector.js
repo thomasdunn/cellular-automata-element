@@ -20,7 +20,10 @@ export class PatternSelector extends EventTarget {
 
         const defaultOpt = document.createElement('option');
         defaultOpt.text = 'Select pattern...';
+        defaultOpt.value = '';
         this.select.add(defaultOpt, 0);
+
+        this.select.selectedIndex = 0;
 
         parent.appendChild(this.select);
     }
