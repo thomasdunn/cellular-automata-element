@@ -1,3 +1,19 @@
+/*
+
+cellular-automata-element
+
+ */
+
+(async () => {
+    // TODO
+    //   * put code in here and use async/await
+    //   * step thru files and fix errors on loading (rle parser updates?)
+    //   * setup public and private remotes
+    //   * web component-ize
+    //     src/height/width/bbox padding/colors/mediacontorls(play/pause/speed/step)
+    //   
+})();
+
 import {Perf} from './perf.js';
 import {PatternLoader} from './pattern-loader.js';
 import {PatternSelector} from './pattern-selector.js';
