@@ -1,5 +1,6 @@
 import { RleParser } from './rle-parser';
 import { expect } from 'chai';
+import { describe, beforeEach, it } from 'mocha';
 
 describe('RleParser', () => {
     const glider = `#N Glider

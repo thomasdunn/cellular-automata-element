@@ -22,7 +22,13 @@ class App {
     stageHeight = 800;
     cellCountX = 400;
     cellCountY = 400;
-    
+
+    // vgun sized:
+    // stageWidth = 2500;
+    // stageHeight = 1500;
+    // cellCountX = 2500;
+    // cellCountY = 1500;
+   
     cellWidth = this.stageWidth / this.cellCountX;
     cellHeight = this.stageHeight / this.cellCountY;
 
@@ -32,7 +38,7 @@ class App {
         this.collectionsUrl = collectionsUrl;
         this.collectionName = collectionsName;
         
-        this.perf = new Perf({logEvery: 10});
+        this.perf = new Perf({logEvery: 100});
         this.patternLoader = new PatternLoader(this.collectionsUrl);
         this.graphics = new Graphics(this.cellWidth, this.cellHeight, this.stageWidth, this.stageHeight);
         this.cellManager = new CellManager(this.cellCountX, this.cellCountY, this.graphics);        
