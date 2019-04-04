@@ -57,7 +57,7 @@ class App {
 
     async loadPattern(patternFilename) {
         try {
-            const [, patternName] = patternFilename.match(/^([^.]+)\.\w+$/);
+            const [, patternName] = patternFilename.match(/^(.+)\.\w+$/);
             const data = await this.patternLoader.getRleData(this.collectionName, patternName);
     
             console.log(JSON.stringify(data));
