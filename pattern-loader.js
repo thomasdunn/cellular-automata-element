@@ -8,9 +8,13 @@ export class PatternLoader {
 
     async getRleData(collectionName, patternName) {
         const parser = this.parser;
-
-        return fetch(`${this.collectionsUrl}/patterns/${collectionName}/${patternName}.rle`)
-            .then(response => response.text())
+        const url = `${this.collectionsUrl}/patterns/${collectionName}/${patternName}.rle`;
+        console.log(`***Url*** ${url}`);
+        return fetch(url)
+            .then(response => {
+                console.log(`Fetch ${response.url} - ${response.status}: ${response.statusText} ${JSON.stringify(response.headers)}`);
+                return response.text();
+            })
             .then(function(rleData) {
                 const {pattern, width, height} = parser.parse(rleData);
                 return {

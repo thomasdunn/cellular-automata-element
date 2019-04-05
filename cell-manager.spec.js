@@ -1,7 +1,18 @@
+/* eslint-disable no-console */
+
+import path from 'path';
+
 import { expect } from 'chai';
 import { describe, beforeEach, it } from 'mocha';
 
+import handler from 'serve-handler';
+import listen from 'test-listen';
+import micro from 'micro';
+import fetch from 'node-fetch';
+global.fetch = fetch;
+
 import { CellManager } from './cell-manager';
+import { PatternLoader } from './pattern-loader';
 
 describe('CellManager', () => {
 
@@ -22,7 +33,6 @@ describe('CellManager', () => {
 
     beforeEach(() => {
         graphicsSpy.reset();
-
     });
 
     it('#init sets buffer data', () => {
@@ -77,21 +87,34 @@ expect(cellManager.toCellsText()).to.equal(
         // const data = await this.patternLoader.getRleData('conwaylife', 'glider');
     });
 
-    // it('generates without error', function(done) {
-    //     const collectionsUrl = 'node_modules/cellular-automata-patterns'; 
-    //     const patternLoader = new PatternLoader(collectionsUrl);
+    describe('PatternLoader integration', () => {
+        const collectionsPath = 'node_modules/cellular-automata-patterns'; 
+        
+        it('generates without error', async() => {
+    
+            const url = await getUrl();
+            const patternLoader = new PatternLoader(`${url}/${collectionsPath}`);
 
-    //     patternLoader.getRleData('conwaylife', 'glider').then(data => {
-    //         cellManager = new CellManager(data.width, data.height, graphicsSpy);
-    //         cellManager.init(data);
-    //         cellManager.nextGeneration();
+            const data = await patternLoader.getRleData('conwaylife', 'glider');
+            cellManager = new CellManager(data.width, data.height, graphicsSpy);
+            cellManager.init(data);
+            cellManager.nextGeneration();
+        });
 
-    //         done();
-    //     });
-    // });
-
-    // this.patternLoader.getPatternIndex().then(patternIndex => {
-    // });
-
+        const getUrl = (handlers) => {
+            const config = {
+                'public': path.join('..', collectionsPath)
+            };
+        
+            const server = micro(async (request, response) => {
+                await handler(request, response, config, handlers);
+            });
+        
+            return listen(server);
+        };
+    
+        // this.patternLoader.getPatternIndex().then(patternIndex => {
+        // });
+    });
 
 });

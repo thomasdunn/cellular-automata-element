@@ -1,3 +1,4 @@
+// RLE grammar: https://gist.github.com/thomasdunn/d70be5cc43a2b29ae93ffb07e7e9c067
 export class RleParser {
 
     isComment(line) {
@@ -14,7 +15,7 @@ export class RleParser {
         let width;
         let height;
         let rule;
-
+console.log('***Line*** '+line);
         // _________________________  x   =    3      ,   y   =    3         ,   rule   =   B3/S23
         const match = line.match(/^\s*x\s*=\s*(\d+)\s*,\s*y\s*=\s*(\d+)(?:\s*,\s*rule\s*=\s*(.*))?$/m);
         if (match !== null) {
@@ -58,7 +59,7 @@ export class RleParser {
         const name = contents;
         const creator = contents;
         let comments = [];
-
+console.log('***Contents*** ' + contents);
         // split on newline and filter out empty lines
         const lines = contents.split(/\n/g).filter(line => line.length > 0);
 
