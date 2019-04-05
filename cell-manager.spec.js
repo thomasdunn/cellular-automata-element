@@ -1,13 +1,8 @@
 /* eslint-disable no-console */
 
-import path from 'path';
-
 import { expect } from 'chai';
 import { describe, beforeEach, it } from 'mocha';
 
-import handler from 'serve-handler';
-import listen from 'test-listen';
-import micro from 'micro';
 import fetch from 'node-fetch';
 global.fetch = fetch;
 
@@ -88,30 +83,27 @@ expect(cellManager.toCellsText()).to.equal(
     });
 
     describe('PatternLoader integration', () => {
-        const collectionsPath = 'node_modules/cellular-automata-patterns'; 
         
         it('generates without error', async() => {
     
-            const url = await getUrl();
-            const patternLoader = new PatternLoader(`${url}/${collectionsPath}`);
+            const url = 'http://localhost:6633';
+            // const url = await getUrl();
+            const patternLoader = new PatternLoader(`${url}`);
 
             const data = await patternLoader.getRleData('conwaylife', 'glider');
             cellManager = new CellManager(data.width, data.height, graphicsSpy);
             cellManager.init(data);
+            
             cellManager.nextGeneration();
-        });
+            const gen0 = cellManager.toCellsText();
+            console.log(`gen0:\n${gen0}`);
 
-        const getUrl = (handlers) => {
-            const config = {
-                'public': path.join('..', collectionsPath)
-            };
-        
-            const server = micro(async (request, response) => {
-                await handler(request, response, config, handlers);
-            });
-        
-            return listen(server);
-        };
+            cellManager.nextGeneration();
+            const gen1 = cellManager.toCellsText();
+            console.log(`gen1:\n${gen1}`);
+
+            expect(gen1).to.equal(gen0);
+        });
     
         // this.patternLoader.getPatternIndex().then(patternIndex => {
         // });
